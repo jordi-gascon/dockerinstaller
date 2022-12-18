@@ -1,88 +1,61 @@
 #!/bin/bash
 
-# Mostramos un menú para elegir entre las distintas distribuciones de Linux
-echo "Selecciona la distribución de Linux sobre la que se instalará docker y docker compose"
-echo "1. Ubuntu 22.04"
-echo "2. Ubuntu 20.04"
-echo "3. Debian Buster"
-echo "4. Debian Bullseye"
-read -p "Selecciona una opción (1, 2, 3 o 4): " distro
+# Autodetectamos la distribución de Linux y la versión
+distro_name=$(lsb_release -is)
+distro_version=$(lsb_release -cs)
 
-# Verificamos la opción seleccionada y realizamos las acciones necesarias para cada distro
-if [ "$distro" == "1" ]; then
-  distro_name="Ubuntu 22.04"
-  # Añadimos los repositorios de Docker para Ubuntu 22.04
-  apt-get update
-  apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg-agent \
-    software-properties-common
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-    focal \
-    stable"
-elif [ "$distro" == "2" ]; then
-  distro_name="Ubuntu 20.04"
-  # Añadimos los repositorios de Docker para Ubuntu 20.04
-  apt-get update
-  apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg-agent \
-    software-properties-common
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-    focal \
-    stable"
-elif [ "$distro" == "3" ]; then
-  distro_name="Debian Buster"
-  # Añadimos los repositorios de Docker para Debian Buster
-  apt-get update
-  apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg2 \
-    software-properties-common
-  curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-  add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/debian \
-    buster \
-    stable"
-elif [ "$distro" == "4" ]; then
-  distro_name="Debian Bullseye"
-  # Añadimos los repositorios de Docker para Debian Bullseye
-  apt-get update
-  apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg2
-    software-properties-common
-  curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-  add-apt-repository
-    "deb [arch=amd64] https://download.docker.com/linux/debian
-    bullseye
-    stable"
+# Mostramos la distribución y la versión detectadas al usuario
+echo "Se ha detectado que estás utilizando $distro_name $distro_version."
+read -p "¿Es esta la distribución y versión correctas? (s/n) " confirm
+
+# Si el usuario confirma que la distribución y versión son correctas, procedemos a instalar Docker y Docker Compose
+if [ "$confirm" == "s" ]; then
+  # Verificamos si la distribución es Ubuntu o Debian y añadimos los repositorios de Docker adecuados
+  if [ "$distro_name" == "Ubuntu" ]; then
+    # Añadimos los repositorios de Docker para Ubuntu
+    apt-get update
+    apt-get upgrade -y
+    apt-get install -y \
+      apt-transport-https \
+      ca-certificates \
+      curl \
+      gnupg-agent \
+      software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    add-apt-repository \
+      "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+      $distro_version \
+      stable"
+  elif [ "$distro_name" == "Debian" ]; then
+    # Añadimos los repositorios de Docker para Debian
+    apt-get update
+    apt-get upgrade -y
+    apt-get install -y \
+      apt-transport-https \
+      ca-certificates \
+      curl \
+      gnupg2 \
+      software-properties-common
+    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+    add-apt-repository
+"deb [arch=amd64] https://download.docker.com/linux/debian
+$distro_version
+stable"
 else
-echo "Opción inválida. Saliendo del script."
+echo "Distribución no soportada. Saliendo del script."
 exit 1
 fi
 
-Instalamos Docker y Docker Compose
+#Instalamos Docker y Docker Compose
 apt update
+apt upgrade -y
 apt install -y docker.io docker-compose
 
-Iniciamos el servicio de Docker y habilitamos el inicio automático
+#Iniciamos el servicio de Docker y habilitamos el inicio automático
 systemctl start docker
 systemctl enable docker
 
-Verificamos que Docker y Docker Compose estén instalados correctamente
+#Verificamos que Docker y Docker Compose estén instalados correctamente
 if ! command -v docker > /dev/null; then
 echo "Docker no se ha instalado correctamente. Saliendo del script."
 exit 1
@@ -93,4 +66,8 @@ echo "Docker Compose no se ha instalado correctamente. Saliendo del script."
 exit 1
 fi
 
-echo "Docker y Docker Compose se han instalado correctamente en $distro_name."
+echo "Docker y Docker Compose se han instalado correctamente en $distro_name $distro_version."
+else
+echo "Saliendo del script sin realizar ninguna acción."
+exit 0
+fi
