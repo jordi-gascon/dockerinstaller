@@ -17,7 +17,7 @@ distro_name=$(lsb_release -is)
 distro_version=$(lsb_release -cs)
 
 # Mostramos la distribución y la versión detectadas al usuario
-echo "Se ha detectado que estás utilizando $distro_name $distro_version."
+echo "Se ha detectado que estás utilizando >>>>>>    $distro_name $distro_version."
 read -p "¿Es esta la distribución y versión correctas? (s/n) " confirm
 
 # Si el usuario confirma que la distribución y versión son correctas, procedemos a instalar Docker y Docker Compose
