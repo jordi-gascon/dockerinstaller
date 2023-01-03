@@ -1,5 +1,17 @@
 #!/bin/bash
 
+echo "     _               _                 _              _           _  _             "
+echo "    | |             | |               (_)            | |         | || |            "
+echo "  __| |  ___    ___ | | __  ___  _ __  _  _ __   ___ | |_   __ _ | || |  ___  _ __ "
+echo " / _` | / _ \  / __|| |/ / / _ \| '__|| || '_ \ / __|| __| / _` || || | / _ \| '__|"
+echo "| (_| || (_) || (__ |   < |  __/| |   | || | | |\__ \| |_ | (_| || || ||  __/| |   "
+echo " \__,_| \___/  \___||_|\_\ \___||_|   |_||_| |_||___/ \__| \__,_||_||_| \___||_|   "
+echo "Autor: Jordi Gascon    Github @jordi-gascon"
+echo "V1.1 -- 03/01/23  ----  Compatible con Ubuntu 20.04-22.04 y Debian 10-11"
+echo "Instala Docker y Docker compose en un solo clic"
+echo "##############################################################################################"
+
+
 # Autodetectamos la distribución de Linux y la versión
 distro_name=$(lsb_release -is)
 distro_version=$(lsb_release -cs)
@@ -49,7 +61,7 @@ fi
 #Instalamos Docker y Docker Compose
 apt update
 apt upgrade -y
-apt install -y docker.io docker-compose
+apt install -y docker-ce docker-compose
 
 #Iniciamos el servicio de Docker y habilitamos el inicio automático
 systemctl start docker
